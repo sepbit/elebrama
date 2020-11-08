@@ -1,0 +1,6 @@
+setuptools==50.3.2
+wheel==0.35.1
+check-manifest==0.44
+coverage==5.3
+pylint==2.6.0
+tox==3.20.1
