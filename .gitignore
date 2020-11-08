@@ -1,0 +1,13 @@
+.coverage
+tags
+*.pyc
+.git/
+__pycache__/
+build/
+dist/
+docs/pdoc
+htmlcov/
+*.egg-info/
+env/
+.tox
+production.ini
