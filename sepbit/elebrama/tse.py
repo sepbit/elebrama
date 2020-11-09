@@ -25,7 +25,7 @@ def order(element):
     '''
     Organiza os candidatos por mais votados
     '''
-    return element['vap']
+    return element['seq']
 
 def buscar_municipio(estado, municipio):
     '''
@@ -91,7 +91,7 @@ def resultado_consolidado(estado, municipio):
         ' - #' + estado.upper() + '\n\n'
 
     i = 0
-    for cand in sorted(obj['cand'], key = order, reverse=True):
+    for cand in sorted(obj['cand'], key = order):
         message += cand['pvap'].strip(' ') + '% - ' + \
             cand['nm'].title()  + ' ' + str(cand['n'])
 
