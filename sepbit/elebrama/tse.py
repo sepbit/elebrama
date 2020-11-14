@@ -34,8 +34,8 @@ def buscar_municipio(estado, municipio):
         /interessados-na-divulgacao-de-resultados
     '''
     with urlopen(
-        'https://resultados.tse.jus.br/publico/ele2020/divulgacao/' \
-        'simulado/8334/config/mun-e008334-cm.json'
+        'https://resultados.tse.jus.br/oficial/ele2020/divulgacao/' \
+        'oficial/426/config/mun-e000426-cm.json'
     ) as res:
         res = res.read()
 
@@ -49,7 +49,7 @@ def buscar_municipio(estado, municipio):
 
     return False
 
-def verificar (key, data, hora):
+def verificar(key, data, hora):
     '''
     Impede repetir o resultado
     '''
@@ -75,9 +75,9 @@ def resultado_consolidado(estado, municipio):
     '''
 
     with urlopen(
-        'https://resultados.tse.jus.br/publico/ele2020/divulgacao/simulado/' + \
-        '8334/dados-simplificados/' + estado + '/' + estado + \
-        municipio + '-c0011-e008334-r.json'
+        'https://resultados.tse.jus.br/oficial/ele2020/divulgacao/oficial/' + \
+        '426/dados-simplificados/' + estado + '/' + estado + \
+        municipio + '-c0011-e000426-r.json'
     ) as res:
         res = res.read()
 
@@ -86,16 +86,16 @@ def resultado_consolidado(estado, municipio):
     if not verificar(estado + municipio, obj['dt'], obj['ht']):
         return False
 
-    message = 'Atualização #eleicao #' + \
+    message = '#eleicao #' + \
         build_hashtag(buscar_municipio(estado, municipio)['nm']) + \
         ' - #' + estado.upper() + '\n\n'
 
     i = 0
     for cand in sorted(obj['cand'], key = order):
         message += cand['pvap'].strip(' ') + '% - ' + \
-            cand['nm'].title()  + ' ' + str(cand['n'])
+            cand['nm'].title()  + ' (' + str(cand['n']) + ')'
 
-        if cand['st'] != 'Não eleito':
+        if cand['st'] != '':
             message += ' - ' + cand['st'] + '\n'
         elif cand['dvt'] != 'Válido':
             message += ' - ' + cand['dvt'] + '\n'
@@ -103,11 +103,11 @@ def resultado_consolidado(estado, municipio):
             message += '\n'
 
         i += 1
-        if i == 10:
+        if i == 5:
             break
 
     message += '\nAtualização: ' + obj['dt']  + ' ' + obj['ht'] + \
-        ', seções apuradas: ' + obj['psa'].strip() + '%' \
-        '\n#eleicao #eleicao2020 eleicaobr'
+        ', apuração: ' + obj['psa'].strip() + '%' \
+        '\n#bot #eleicaobr #eleicao2020'
 
     return message
