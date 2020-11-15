@@ -25,7 +25,7 @@ def order(element):
     '''
     Organiza os candidatos por mais votados
     '''
-    return element['seq']
+    return int(element['seq'])
 
 def buscar_municipio(estado, municipio):
     '''
@@ -107,7 +107,7 @@ def resultado_consolidado(estado, municipio):
             break
 
     message += '\nAtualização: ' + obj['dt']  + ' ' + obj['ht'] + \
-        ', apuração: ' + obj['psa'].strip() + '%' \
+        ', apuração: ' + obj['pst'].strip() + '%' \
         '\n#bot #eleicaobr #eleicao2020'
 
     return message
