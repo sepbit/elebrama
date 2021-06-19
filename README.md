@@ -18,7 +18,7 @@ Esse pacote é compatível com [Pylint](https://www.pylint.org).
 $ python3 -m venv env
 $ source ./env/bin/activate
 $ pip install -r requirements.txt
-$ python3 -m pip install .
+$ pip install .
 ```
 
 # Configuração
