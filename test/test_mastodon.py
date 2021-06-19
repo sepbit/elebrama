@@ -1,6 +1,6 @@
-"""
-Elebrama - Eleição no Brasil para Mastodon
-Copyright (C) 2020  Vitor Guia
+'''
+Mastodon.py Simple statuses Mastodon
+Copyright (C) 2020 Vitor Guia
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
-"""
+'''
 
 import unittest
 from os import environ
@@ -22,14 +22,14 @@ from sepbit.cabrama.mastodon import statuses, delete
 
 
 class MastodonTest(unittest.TestCase):
-    """
+    '''
     Test mastodon.py module
-    """
+    '''
 
     def test_statuses(self):
-        """
+        '''
         Test statuses function
-        """
+        '''
         result = statuses(
             environ['INSTANCE'],
             environ['TOKEN'],
@@ -42,9 +42,9 @@ class MastodonTest(unittest.TestCase):
 
         self.assertTrue(result)
 
-        """
+        '''
         Test delete function
-        """
+        '''
         self.assertTrue(
             delete(
                 environ['INSTANCE'],
