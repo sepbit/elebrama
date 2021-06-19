@@ -18,7 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import unittest
 from os import environ
-from sepbit.cabrama.mastodon import statuses, delete
+from sepbit.elebrama.mastodon import statuses, delete
 
 
 class MastodonTest(unittest.TestCase):

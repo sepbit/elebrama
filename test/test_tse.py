@@ -25,7 +25,7 @@ class TseTest(unittest.TestCase):
     Test tse module
     """
 
-    def resultado_consolidado(self):
+    def test_resultado_consolidado(self):
         """
         Test resultado_consolidado function
         """
