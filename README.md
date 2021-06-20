@@ -8,7 +8,9 @@ Fonte: [TSE](https://www.tse.jus.br/eleicoes/eleicoes-2020/eleicoes-2020/interes
 
 Esse pacote é compatível com [Pylint](https://www.pylint.org).
 
-# Instalação
+## Instalação
+
+Este projeto usa [Python](https://www.python.org) e [pip](https://pypi.org)
 
 ``` bash
 # apt install -y python3 python3-pip python3-setuptools python3-wheel python3-venv python3-dev
@@ -21,7 +23,7 @@ $ pip install -r requirements.txt
 $ pip install .
 ```
 
-# Configuração
+## Configuração
 
 Em sua instância [Mastodon](https://joinmastodon.org), crie um aplicativo com a permissão `write:statuses`
 
