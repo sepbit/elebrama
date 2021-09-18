@@ -77,13 +77,13 @@ def resultado_consolidado(estado, municipio):
     with urlopen(
         'https://resultados.tse.jus.br/oficial/ele2020/divulgacao/oficial/' + \
         '426/dados-simplificados/' + estado + '/' + estado + \
-        str(municipio) + '-c0011-e000426-r.json'
+        municipio + '-c0011-e000426-r.json'
     ) as res:
         res = res.read()
 
     obj = json.loads(res)
 
-    if not verificar(estado + str(municipio), obj['dt'], obj['ht']):
+    if not verificar(estado + municipio, obj['dt'], obj['ht']):
         return False
 
     message = '#eleicao #' + \
@@ -103,7 +103,7 @@ def resultado_consolidado(estado, municipio):
             message += '\n'
 
         i += 1
-        if i == 5:
+        if i == 4:
             break
 
     message += '\nAtualização: ' + obj['dt']  + ' ' + obj['ht'] + \
