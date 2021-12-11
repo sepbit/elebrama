@@ -1,24 +1,21 @@
-image: python:latest
-
 include:
   - template: Security/SAST.gitlab-ci.yml
   - template: Security/Dependency-Scanning.gitlab-ci.yml
 
-variables:
-  INSTANCE: "$INSTANCE"
-  TOKEN: "$TOKEN"
-
-cache:
-  paths:
-    - env/
-
-before_script:
-  - python -V
-  - python -m venv env
-  - source env/bin/activate
-  - pip install -r requirements.txt
-  - pip install .
-
 test:
+  image: python:latest
+  variables:
+    INSTANCE: "$INSTANCE"
+    TOKEN: "$TOKEN"
+  cache:
+    paths:
+      - env/
+  before_script:
+    - python --version
+    - pip --version
+    - python -m venv env
+    - source env/bin/activate
+    - pip install -r requirements.txt
+    - pip install .
   script:
     - tox
