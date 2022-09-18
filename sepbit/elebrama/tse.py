@@ -1,6 +1,6 @@
 '''
 Elebrama - Eleição no Brasil para Mastodon
-Copyright (C) 2020 Vitor Guia
+Copyright (C) 2020-2022 Vitor Guia
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -21,74 +21,102 @@ import shelve
 import unicodedata
 from urllib.request import urlopen
 
-def order(element):
+def get_order(element):
     '''
     Organiza os candidatos por mais votados
     '''
     return int(element['seq'])
 
-def buscar_municipio(estado, municipio):
+def get_cargo( cargo ):
     '''
-    EA12 - Arquivo de configuração de municípios - versão 01-2020
-    See https://www.tse.jus.br/eleicoes/eleicoes-2020/eleicoes-2020
-        /interessados-na-divulgacao-de-resultados
+    Obter numero do cargo
     '''
-    with urlopen(
-        'https://resultados.tse.jus.br/oficial/ele2020/divulgacao/' \
-        'oficial/426/config/mun-e000426-cm.json'
-    ) as res:
-        res = res.read()
+    cargos = {
+        'presidente'         : '0001',
+        'governador'         : '0003',
+        'senador'            : '0005',
+        'deputado_federal'   : '0006',
+        'deputado_estadual'  : '0007',
+        'deputado_distrital' : '0008',
+        'prefeito'           : '0011',
+        'vereador'           : '0013'
+    }
+    cargo = cargo.lower().replace(' ', '_')
+    return cargos[ cargo ]
 
-    obj = json.loads(res)
-
-    for estados in obj['abr']:
-        if estados['cd'] == estado.upper():
-            for municipios in estados['mu']:
-                if municipio == municipios['cd']:
-                    return municipios
+def get_abr( data, uf):
+    '''
+    Obter dados de uma UF
+    '''
+    for estados in data['abr']:
+        if estados['cd'] == uf.upper():
+            return estados
 
     return False
 
-def verificar(key, data, hora):
+def get_nm( abr, municipio ):
     '''
-    Impede repetir o resultado
+    Obter dados de um município
     '''
-    with shelve.open('/tmp/elebrama', 'c') as cache:
-        if cache.get(key) != data + ' ' + hora:
-            cache[key] = data + ' ' + hora
-            return True
+    for municipios in abr['mu']:
+        if municipios['nm'] == municipio.upper():
+            return municipios
 
     return False
 
-def build_hashtag(title):
+def config(api, ambiente, ciclo, pleito ):
     '''
-    Description
+    EA12 - Arquivo de configuração de municípios
+    See https://www.tse.jus.br/eleicoes/eleicoes-2022/
+        interessados-na-divulgacao-de-resultados-2022
     '''
-    adress = unicodedata.normalize('NFKD', title).encode('ASCII', 'ignore')
-    return adress.decode('ASCII').title().replace(' ', '')
+    endpoint = api + ambiente + '/' + ciclo + '/' + pleito + '/config/mun-e00' + pleito + '-cm.json'
+    with urlopen( endpoint ) as res:
+        res = res.read()
 
-def resultado_consolidado(estado, municipio):
-    '''
-    EA04 - Arquivo de resultado consolidado - versão 01-2020
-    See https://www.tse.jus.br/eleicoes/eleicoes-2020/eleicoes-2020
-        /interessados-na-divulgacao-de-resultados
-    '''
+    return json.loads(res)
 
-    with urlopen(
-        'https://resultados.tse.jus.br/oficial/ele2020/divulgacao/oficial/' + \
-        '426/dados-simplificados/' + estado + '/' + estado + \
-        municipio + '-c0011-e000426-r.json'
-    ) as res:
+def dados_simplificados(api, ambiente, ciclo, pleito, cargo, uf, municipio = False ):
+    '''
+    EA04 - Arquivo de resultado consolidado
+    See https://www.tse.jus.br/eleicoes/eleicoes-2022/
+        interessados-na-divulgacao-de-resultados-2022
+    '''
+    uf = uf.lower()
+
+    # Obter código do cargo
+    cargo = get_cargo( cargo )
+
+    if municipio :
+        endpoint = api + ambiente + '/' + ciclo + '/' + pleito + '/dados-simplificados/' + \
+           uf + '/' + uf + municipio + '-c' + cargo + '-e00' + pleito + '-r.json'
+
+    else :
+        endpoint = api + ambiente + '/' + ciclo + '/' + pleito + '/dados-simplificados/' + \
+           uf + '/' + uf + '-c' + cargo + '-e00' + pleito + '-r.json'
+
+    with urlopen( endpoint ) as res:
         res = res.read()
 
     obj = json.loads(res)
+    obj['cand'] = sorted(obj['cand'], key = get_order)
+    return obj
 
-    if not verificar(estado + municipio, obj['dt'], obj['ht']):
-        return False
+    print( obj )
+    exit()
 
-    message = '#eleicao #' + \
-        build_hashtag(buscar_municipio(estado, municipio)['nm']) + \
-        ' - #' + estado.upper() + '\n\n'
+    #if not verificar(estado + municipio, obj['dt'], obj['ht']):
+        #return False
+
+    response = config(api, ambiente, ciclo, pleito )
+    b = get_abr( response, uf )
+    c = get_nm( b, 'BRASÍLIA' )
+    print( obj )
+    print( b )
+    print( c )
+    exit()
+
+    message = '#eleicao #'
 
     i = 0
     for cand in sorted(obj['cand'], key = order):

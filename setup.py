@@ -37,7 +37,7 @@ setup(
     url='https://gitlab.com/sepbit/elebrama',
     packages=['sepbit.elebrama'],
     python_requires='~=3.7',
-    install_requires=['setuptools'],
+    install_requires=['setuptools', 'sepbit.sistamapy'],
     extras_require={
         'dev': ['check-manifest'],
         'test': ['coverage'],

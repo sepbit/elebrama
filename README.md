@@ -39,7 +39,7 @@ $ export TOKEN="bar foo"
 Se você não receber mensagem, deu tudo certo!
 
 ``` bash
-$ ./env/bin/elebrama ms 90514
+$ ./env/bin/elebrama
 ```
 
 ## Testes

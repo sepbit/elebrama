@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 '''
 Elebrama - Eleição no Brasil para Mastodon
-Copyright (C) 2020 Vitor Guia
+Copyright (C) 2020-2022 Vitor Guia
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -20,30 +20,55 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import sys
 from os import environ
-from sepbit.elebrama.mastodon import statuses
-from sepbit.elebrama.tse import resultado_consolidado, buscar_municipio
-
+from sepbit.sistamapy.statuses import Statuses
+from sepbit.elebrama.tse import dados_simplificados
 
 def main():
     '''
     Entry point
     '''
-    resultado = resultado_consolidado(sys.argv[1], sys.argv[2])
+    resultado = dados_simplificados(
+        'https://resultados-sim.tse.jus.br/',
+        'teste',
+        'ele2022',
+        '9238',
+        'governador',
+        'df',
+        False
+    )
+
+    message = 'SIMULADO #eleicao #governador #df \n'
+    i = 0
+    for cand in resultado['cand']:
+        message += cand['pvap'].strip(' ') + '% - ' + \
+            cand['nm'].title()  + ' (' + str(cand['n']) + ')'
+
+        if cand['st'] != '':
+            message += ' - ' + cand['st'] + '\n'
+        elif cand['dvt'] != 'Válido':
+            message += ' - ' + cand['dvt'] + '\n'
+        else :
+            message += '\n'
+
+        i += 1
+        if i == 4:
+            break
+
+    message += '\nAtualização: ' + resultado['dt']  + ' ' + resultado['ht'] + \
+        ', apuração: ' + resultado['pst'].strip() + '%' \
+        '\n#bot #eleicaobr #eleicao2022'
 
     if resultado:
-        statuses(
+        toot = Statuses(
             environ['INSTANCE'],
-            environ['TOKEN'],
-            data = {
-                'spoiler_text': 'Atualização eleição ' +\
-                    buscar_municipio(sys.argv[1], sys.argv[2])['nm'].title() + \
-                    ' - ' + sys.argv[1].upper(),
-                'status': resultado,
-                'language': 'por',
-                'visibility': 'public'
-            }
+            environ['TOKEN']
         )
-
+        toot.post({
+            'spoiler_text': 'Eleição para Governador DF',
+            'status': message,
+            'language': 'por',
+            'visibility': 'public'
+        })
 
 if __name__ == '__main__':
     main()
