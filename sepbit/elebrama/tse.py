@@ -89,11 +89,11 @@ def dados_simplificados(api, ambiente, ciclo, pleito, cargo, uf, municipio = Fal
 
     if municipio :
         endpoint = api + ambiente + '/' + ciclo + '/' + pleito + '/dados-simplificados/' + \
-           uf + '/' + uf + municipio + '-c' + cargo + '-e00' + pleito + '-r.json'
+           uf + '/' + uf + municipio + '-c' + cargo + '-e' + pleito.zfill(6) + '-r.json'
 
     else :
         endpoint = api + ambiente + '/' + ciclo + '/' + pleito + '/dados-simplificados/' + \
-           uf + '/' + uf + '-c' + cargo + '-e00' + pleito + '-r.json'
+           uf + '/' + uf + '-c' + cargo + '-e' + pleito.zfill(6) + '-r.json'
 
     with urlopen( endpoint ) as res:
         res = res.read()
